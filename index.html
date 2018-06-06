@@ -45,6 +45,8 @@
                     axios.post('http://localhost:3000/contents', {
                         content: this.input
                     }).then((res) => {
+                        this.input = ''
+                        this.contents.push(res.data)
                         console.log(res)
                     })
                 }
