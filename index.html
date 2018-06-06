@@ -59,10 +59,11 @@
                     })
                 }
             },
-            mounted() {
+            mounted($) {
                 axios.get('http://localhost:3000/contents').then((res) => {
                     this.contents = res.data
                 })
+                console.log(this, $)
             }
         })
     </script>
