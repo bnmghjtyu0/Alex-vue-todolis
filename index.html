@@ -13,11 +13,12 @@
     <div id="app">
         <div>
             <p>
-                <input type="text">
-                <a href="javascript:;">CREATE</a>
+                <input type="text" v-model="input">
+                <a href="javascript:;" v-on:click="createHandler">CREATE</a>
             </p>
-            <ol>
-                <li>Richard
+            <ol v-for="content in contents">
+                <li>
+                    {{content.content}}
                     <a href="javascript:;">UPDATE</a>
                     <a href="javascript:;">DELETE</a>
                 </li>
@@ -35,7 +36,18 @@
             el: '#app',
             data: {
                 // 建立一個 contents 存取 res.data
-                contents: ''
+                contents: '',
+                input: ''
+            },
+            methods: {
+                createHandler() {
+                    // console.log(this.input)
+                    axios.post('http://localhost:3000/contents', {
+                        content: this.input
+                    }).then((res) => {
+                        console.log(res)
+                    })
+                }
             },
             mounted() {
                 axios.get('http://localhost:3000/contents').then((res) => {
