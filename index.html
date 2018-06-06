@@ -16,11 +16,11 @@
                 <input type="text" v-model.trim="input">
                 <a href="javascript:;" v-on:click="createHandler">CREATE</a>
             </p>
-            <ol v-for="content in contents">
+            <ol v-for="(content,index) in contents">
                 <li>
                     {{content.content}}
                     <a href="javascript:;">UPDATE</a>
-                    <a href="javascript:;" v-on:click="deleteHandler(content.id)">DELETE</a>
+                    <a href="javascript:;" v-on:click="deleteHandler(index)">DELETE</a>
                 </li>
             </ol>
         </div>
@@ -51,8 +51,10 @@
                         console.log(res)
                     })
                 },
-                deleteHandler(id) {
-                    axios.delete(`http://localhost:3000/contents/${id}`).then((res) => {
+                deleteHandler(index) {
+                    let target = this.contents[index];
+                    axios.delete(`http://localhost:3000/contents/${target.id}`).then((res) => {
+                        this.contents.splice(index, 1)
                         console.log(res)
                     })
                 }
