@@ -20,7 +20,7 @@
                 <li>
                     {{content.content}}
                     <a href="javascript:;">UPDATE</a>
-                    <a href="javascript:;">DELETE</a>
+                    <a href="javascript:;" v-on:click="deleteHandler(content.id)">DELETE</a>
                 </li>
             </ol>
         </div>
@@ -48,6 +48,11 @@
                     }).then((res) => {
                         this.input = ''
                         this.contents.push(res.data)
+                        console.log(res)
+                    })
+                },
+                deleteHandler(id) {
+                    axios.delete(`http://localhost:3000/contents/${id}`).then((res) => {
                         console.log(res)
                     })
                 }
