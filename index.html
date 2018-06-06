@@ -13,7 +13,7 @@
     <div id="app">
         <div>
             <p>
-                <input type="text" v-model="input">
+                <input type="text" v-model.trim="input">
                 <a href="javascript:;" v-on:click="createHandler">CREATE</a>
             </p>
             <ol v-for="content in contents">
@@ -42,6 +42,7 @@
             methods: {
                 createHandler() {
                     // console.log(this.input)
+                    if (!this.input) return
                     axios.post('http://localhost:3000/contents', {
                         content: this.input
                     }).then((res) => {
