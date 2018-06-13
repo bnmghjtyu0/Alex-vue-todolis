@@ -12,6 +12,7 @@
 
     <div id="app">
         <div>
+            <div v-html="text.replace('\n','</br>')"></div>
             <p>
                 <input type="text" v-model.trim="input">
                 <a href="javascript:;" v-on:click="createHandler">CREATE</a>
@@ -37,7 +38,8 @@
             data: {
                 // 建立一個 contents 存取 res.data
                 contents: '',
-                input: ''
+                input: '',
+                text: '123\n456\n555\n'
             },
             methods: {
                 createHandler() {
