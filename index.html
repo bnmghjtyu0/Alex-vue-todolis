@@ -33,6 +33,24 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js'></script>
 
     <script>
+        let router = new VueRouter({
+            //列出要的網址，有順序之分
+            routes: [
+                {
+                    path: '/'
+                },
+                {
+                    path: '/update/:id'
+                },
+                {
+                    path: '*',
+                    redirect: '/'
+                    //其他導回首頁
+                }
+            ]
+        })
+
+
         new Vue({
             el: '#app',
             data: {
@@ -41,6 +59,7 @@
                 input: '',
                 text: '123\n456\n555\n'
             },
+            router: router,
             methods: {
                 createHandler() {
                     // console.log(this.input)

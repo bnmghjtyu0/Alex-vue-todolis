@@ -1,12 +1,8 @@
 {
   "contents": [
     {
-      "id": 1,
-      "content": "richard"
-    },
-    {
       "content": "123",
-      "id": 2
+      "id": 1
     }
   ]
 }
