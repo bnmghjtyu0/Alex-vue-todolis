@@ -38,8 +38,13 @@
             data() {
                 return {
                     // 建立一個 contents 存取 res.data
-                    contents: '',
                     input: '',
+                }
+            },
+            // data 移到 computed , 改從 state 拿資料
+            computed: {
+                contents() {
+                    return this.$store.state.contents
                 }
             },
             methods: {
@@ -50,16 +55,18 @@
                         content: this.input
                     }).then((res) => {
                         this.input = ''
-                        this.contents.push(res.data)
-                        console.log(res)
+                        // this.contents.push(res.data)
+                        // console.log(res)
+                        this.$store.commit('addContent', res.data)
                     })
                 },
                 deleteHandler(index) {
                     let target = this.contents[index];
-                    axios.delete(`http://localhost:3000/contents/${target.id}`).then((res) => {
-                        this.contents.splice(index, 1)
-                        console.log(res)
-                    })
+                    // axios.delete(`http://localhost:3000/contents/${target.id}`).then((res) => {
+                    //     this.contents.splice(index, 1)
+                    //     console.log(res)
+                    // })
+                    this.$store.dispatch('CONTENT_DELETE', { target })
                 },
                 updateHandler(index) {
                     let target = this.contents[index];
@@ -80,22 +87,86 @@
         let Edit = {
             template: `
             <div>
-                <input>
-                <a href="javascript:;">UPDATE</a>
+                <input v-model.trim="input">
+                <a href="javascript:;" v-on:click="updateHandler">UPDATE</a>
             </div>
-            `
+            `,
+            data() {
+                return {
+                    input: ''
+                }
+            },
+            computed: {
+                content() {
+                    // find 回傳物件 filter 回傳陣列
+                    return this.$store.state.contents.find((item) => {
+                        return item.id = this.$route.params.id
+                    })
+                }
+            },
+            methods: {
+                updateHandler() {
+                    this.$store.dispatch('CONTENT_UPDATE', {
+                        id: this.content.id,
+                        input: this.input
+                    }).then(() => {
+                        this.$router.push({ path: '/' })
+                    })
+                }
+            },
+            mounted() {
+                if (!this.content) return this.$router.replace({ path: '/' })
+                this.input = this.content.content
+            }
         }
 
         // 要 update 時用 store === vuex
-        const store = new Vuex.Store({
+        let store = new Vuex.Store({
+            strict: true, //測試階段可以開嚴格模式，但會耗效能
+
             // state 存資料
             state: {
                 contents: []
             },
+            mutations: {
+                setContents(state, data) {
+                    state.contents = data
+                },
+                addContent(state, data) {
+                    state.contents.push(data)
+                },
+                deleteContent(state, data) {
+                    state.contents.splice(data, 1)
+                },
+                updateContent(state, data) {
+                    item.content = input
+                }
+            },
             actions: {
                 // 命名規則: 動詞 + 名詞 + 受詞
                 READ_CONTENTS: (context) => {
-                    console.log(context)
+                    return axios.get('http://localhost:3000/contents').then((res) => {
+                        // this.content = res.data
+                        context.commit('setContents', res.data)
+
+                    })
+                },
+                CONTENT_DELETE: (context, { target }) => {
+                    let index = context.state.contents.indexOf(target)
+                    if (index === -1) return false
+                    return axios.delete('http://localhost:3000/contents/' + target.id).then((res) => {
+                        context.commit('deleteContent', index)
+                    })
+                },
+                CONTENT_UPDATE: (context, { id, input }) => {
+                    console.log('UPDATE')
+                    let index = context.state.contents.find((item) => {
+                        return item.id = id
+                    })
+                    if (!item) return false
+                    return axios.patch('http://localhost:3000/contents/' + item.id, { content: input }).then((res) => {
+                        context.commit('updateContent', { item, input })
+                    })
                 }
             }
 
@@ -128,9 +199,9 @@
 
             router: router,
             store: store,
-            mounted() {
-                this.$store.dispatch('READ_CONTENTS')
-            }
+            // mounted() {
+            //     this.$store.dispatch('READ_CONTENTS')
+            // }
 
         })
     </script>
