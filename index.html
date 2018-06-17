@@ -11,20 +11,7 @@
 <body>
 
     <div id="app">
-        <div>
-            <div v-html="text.replace('\n','</br>')"></div>
-            <p>
-                <input type="text" v-model.trim="input">
-                <a href="javascript:;" v-on:click="createHandler">CREATE</a>
-            </p>
-            <ol v-for="(content,index) in contents">
-                <li>
-                    {{content.content}}
-                    <a href="javascript:;">UPDATE</a>
-                    <a href="javascript:;" v-on:click="deleteHandler(index)">DELETE</a>
-                </li>
-            </ol>
-        </div>
+        <router-view></router-view>
     </div>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17-beta.0/vue.min.js'></script>
@@ -33,33 +20,26 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js'></script>
 
     <script>
-        let router = new VueRouter({
-            //列出要的網址，有順序之分
-            routes: [
-                {
-                    path: '/'
-                },
-                {
-                    path: '/update/:id'
-                },
-                {
-                    path: '*',
-                    redirect: '/'
-                    //其他導回首頁
+        let List = {
+            template: `<div>
+            <p>
+                <input type="text" v-model.trim="input">
+                <a href="javascript:;" v-on:click="createHandler">CREATE</a>
+            </p>
+            <ol>
+                <li>
+                    <a href="javascript:;">UPDATE</a>
+                    <a href="javascript:;" v-on:click="deleteHandler">DELETE</a>
+                </li>
+            </ol>
+        </div>`,
+            data() {
+                return {
+                    // 建立一個 contents 存取 res.data
+                    contents: '',
+                    input: '',
                 }
-            ]
-        })
-
-
-        new Vue({
-            el: '#app',
-            data: {
-                // 建立一個 contents 存取 res.data
-                contents: '',
-                input: '',
-                text: '123\n456\n555\n'
             },
-            router: router,
             methods: {
                 createHandler() {
                     // console.log(this.input)
@@ -86,6 +66,42 @@
                 })
                 console.log(this, $)
             }
+        }
+        let Edit = {
+            template: `
+            <div>
+                <input>
+                <a href="javascript:;">UPDATE</a>
+            </div>
+            `
+        }
+        let router = new VueRouter({
+            //列出要的網址，有順序之分
+            routes: [
+                {
+                    path: '/',
+                    name: 'list', // 幫路由取個名字，幫助日後有需要可以找到這個 router
+                    component: List
+                },
+                {
+                    path: '/update/:id',
+                    name: 'update',
+                    component: Edit
+                },
+                {
+                    path: '*',
+                    redirect: '/'
+                    //其他導回首頁
+                }
+            ]
+        })
+
+
+        new Vue({
+            el: '#app',
+
+            router: router,
+
         })
     </script>
 </body>
