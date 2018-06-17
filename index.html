@@ -85,6 +85,22 @@
             </div>
             `
         }
+
+        // 要 update 時用 store === vuex
+        const store = new Vuex.Store({
+            // state 存資料
+            state: {
+                contents: []
+            },
+            actions: {
+                // 命名規則: 動詞 + 名詞 + 受詞
+                READ_CONTENTS: (context) => {
+                    console.log(context)
+                }
+            }
+
+        })
+
         let router = new VueRouter({
             //列出要的網址，有順序之分
             routes: [
@@ -111,6 +127,10 @@
             el: '#app',
 
             router: router,
+            store: store,
+            mounted() {
+                this.$store.dispatch('READ_CONTENTS')
+            }
 
         })
     </script>
