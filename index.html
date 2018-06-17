@@ -65,7 +65,8 @@
                     let target = this.contents[index];
                     // push 加一個頁面紀錄
                     // replace 替換一個頁面 不能回上一頁
-                    this.$router.push({ path: `/update/${target.id}` })
+                    // this.$router.push({ path: `/update/${target.id}` })
+                    this.$router.push({ name: 'update', params: { id: target.id } })
                     // this.$router.replace({ path: `/update/${target.id}` })
                 }
             },
